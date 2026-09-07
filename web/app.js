@@ -1,5 +1,7 @@
 // Technical Blog Post Factory - Modern Application Engine
-const API_URL = 'http://localhost:8000';
+const API_URL = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null' && window.location.protocol.startsWith('http'))
+    ? window.location.origin
+    : 'http://localhost:8000';
 
 // Global State
 let currentChatId = null;
