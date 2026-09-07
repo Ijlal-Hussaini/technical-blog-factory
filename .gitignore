@@ -1,0 +1,29 @@
+# Environment variables (NEVER COMMIT THIS!)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+
+# Chat history
+chat_history.pkl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Keep assets folder but ignore temp files
+assets/*.tmp
+assets/*.bak

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Blog Post Factory • AI Multi-Agent Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Navigation">
+                    ☰
+                </button>
+                <div class="brand-logo">
+                    <div class="brand-icon">📝</div>
+                    <div class="brand-text">
+                        <h1>Blog Post Factory</h1>
+                        <span>Multi-Agent AI Studio</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-right">
+                <div class="api-status-badge" id="apiStatusBadge" title="Backend connected">
+                    <span class="status-dot"></span>
+                    <span id="apiStatusText">API Online</span>
+                </div>
+                <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme" title="Switch light/dark theme">
+                    🌙
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Application Shell -->
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="btn-new-chat" id="newChatBtn">
+                    <span>➕</span>
+                    <span>New Article</span>
+                </button>
+            </div>
+
+            <div class="sidebar-scrollable">
+                <!-- Chat History -->
+                <div>
+                    <div class="sidebar-section-title">
+                        <span>Articles History</span>
+                        <span id="chatCountBadge">0</span>
+                    </div>
+                    <div class="chat-list" id="chatHistory">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Generation Settings -->
+                <div>
+                    <div class="sidebar-section-title">
+                        <span>Configuration</span>
+                    </div>
+                    <div class="settings-box">
+                        <div class="setting-row">
+                            <div class="setting-header">
+                                <span>Review Iterations</span>
+                                <span class="setting-badge" id="iterValue">3</span>
+                            </div>
+                            <input type="range" id="maxIterations" min="1" max="5" value="3" class="range-slider">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Agent Pipeline Info -->
+                <div>
+                    <div class="sidebar-section-title">
+                        <span>Agent Pipeline</span>
+                    </div>
+                    <div class="pipeline-box">
+                        <div class="pipeline-step">
+                            <div class="pipeline-step-icon">📄</div>
+                            <div class="pipeline-step-info">
+                                <div class="pipeline-step-title">Content Writer</div>
+                                <div class="pipeline-step-desc">Gemini 2.5 Flash • Temp 0.7</div>
+                            </div>
+                        </div>
+                        <div class="pipeline-step">
+                            <div class="pipeline-step-icon">🔍</div>
+                            <div class="pipeline-step-info">
+                                <div class="pipeline-step-title">Technical Reviewer</div>
+                                <div class="pipeline-step-desc">Tavily Search • Fact Checking</div>
+                            </div>
+                        </div>
+                        <div class="pipeline-step">
+                            <div class="pipeline-step-icon">💻</div>
+                            <div class="pipeline-step-info">
+                                <div class="pipeline-step-title">Code Generator</div>
+                                <div class="pipeline-step-desc">Syntax Verified • Ready to Run</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Welcome Empty State -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-badge">✨ Autonomous Technical Writing System</div>
+                <h2 class="welcome-title">Generate <span>Production-Grade</span> Technical Blog Posts</h2>
+                <p class="welcome-subtitle">
+                    Our multi-agent system creates comprehensive drafts, validates technical accuracy against live web documentation, and injects tested code snippets.
+                </p>
+
+                <!-- Interactive Quick Prompts -->
+                <div class="suggestion-grid">
+                    <div class="suggestion-card" onclick="populatePrompt('Building Production Microservices with Docker and Go', 'DevOps Engineers')">
+                        <h4>🐳 Docker Microservices</h4>
+                        <p>Architecture, container orchestration, and container networking.</p>
+                    </div>
+                    <div class="suggestion-card" onclick="populatePrompt('Deep Dive into Python AsyncIO and Event Loops', 'Intermediate Developers')">
+                        <h4>⚡ Python AsyncIO</h4>
+                        <p>Coroutines, tasks, event loops, and common concurrency pitfalls.</p>
+                    </div>
+                    <div class="suggestion-card" onclick="populatePrompt('Full Stack Web Development with MERN Stack', 'Advanced Developers')">
+                        <h4>⚛️ Modern MERN Stack</h4>
+                        <p>Scalable APIs, state management, and production best practices.</p>
+                    </div>
+                    <div class="suggestion-card" onclick="populatePrompt('Mastering Database Indexing and Query Optimization', 'Software Architects')">
+                        <h4>🗄️ SQL Optimization</h4>
+                        <p>B-Trees, execution plans, indexing strategies, and performance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Stream -->
+            <div class="messages-container" id="messagesContainer" style="display: none;">
+                <div id="messages"></div>
+            </div>
+
+            <!-- Docked Input Controls -->
+            <div class="prompt-dock" id="promptDock">
+                <div class="prompt-form">
+                    <!-- Audience Selector Pills -->
+                    <div class="audience-pill-selector">
+                        <span class="pill-label">Audience:</span>
+                        <button type="button" class="audience-pill active" data-audience="Beginners">Beginners</button>
+                        <button type="button" class="audience-pill" data-audience="Intermediate Developers">Intermediate</button>
+                        <button type="button" class="audience-pill" data-audience="Advanced Developers">Advanced</button>
+                        <button type="button" class="audience-pill" data-audience="DevOps Engineers">DevOps</button>
+                        <button type="button" class="audience-pill" data-audience="Software Architects">Architects</button>
+                    </div>
+
+                    <!-- Input Bar -->
+                    <div class="prompt-input-row">
+                        <input 
+                            type="text" 
+                            id="topicInput" 
+                            class="prompt-text-input" 
+                            placeholder="Enter technical topic or tutorial title (e.g. Master Rust Concurrency)..." 
+                            autocomplete="off"
+                            required
+                        >
+                        <button class="btn-generate-main" id="generateBtn">
+                            <span>🚀</span>
+                            <span>Generate</span>
+                        </button>
+                    </div>
+
+                    <!-- Extra options -->
+                    <div class="prompt-extra-controls">
+                        <span class="custom-audience-toggle" id="toggleCustomAudience">
+                            <span>✏️</span> Custom Audience Specification
+                        </span>
+                        <span>Press Enter ↵ to generate</span>
+                    </div>
+
+                    <input 
+                        type="text" 
+                        id="customAudienceInput" 
+                        class="custom-audience-input" 
+                        placeholder="e.g. Senior Backend Engineers migrating from Node.js to Go"
+                    >
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Multi-Agent Loading Modal -->
+    <div class="modal-backdrop" id="loadingModal">
+        <div class="pipeline-modal">
+            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">🤖 Agents at Work</h3>
+            <p class="modal-status-text" id="loadingStatus">Initializing agent workflow...</p>
+            
+            <div class="pipeline-animation-container">
+                <div class="pipeline-node active" id="nodeWriter">
+                    <div class="pipeline-node-circle">📄</div>
+                    <div class="pipeline-node-title">Writer</div>
+                </div>
+                <div class="pipeline-node" id="nodeReviewer">
+                    <div class="pipeline-node-circle">🔍</div>
+                    <div class="pipeline-node-title">Reviewer</div>
+                </div>
+                <div class="pipeline-node" id="nodeCoder">
+                    <div class="pipeline-node-circle">💻</div>
+                    <div class="pipeline-node-title">Coder</div>
+                </div>
+            </div>
+
+            <div class="modal-progress-bar">
+                <div class="modal-progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="deleteConfirmModal">
+        <div class="confirm-modal-card">
+            <div class="confirm-modal-icon">
+                <span>🗑️</span>
+            </div>
+            <h3 class="confirm-modal-title">Delete Article?</h3>
+            <p class="confirm-modal-desc" id="deleteConfirmDesc">
+                Are you sure you want to delete this article? This action cannot be undone.
+            </p>
+            <div class="confirm-modal-actions">
+                <button type="button" class="btn-confirm-cancel" id="btnCancelDelete">Cancel</button>
+                <button type="button" class="btn-confirm-delete" id="btnConfirmDelete">Delete Article</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/vendor/jspdf.umd.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
