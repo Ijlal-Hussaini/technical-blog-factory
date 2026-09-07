@@ -9,7 +9,15 @@ TECH_ACRONYMS = {
     "https", "ftp", "smtp", "vpn", "cdn", "sdk", "api", "npm", "pip", "git",
     "svg", "wasm", "nosql", "rdbms", "crud", "orm", "mvc", "mvvm", "ui", "ux",
     "cli", "gui", "ide", "vm", "os", "io", "aio", "asyncio", "llm", "rag", "nlp",
-    "c", "r", "go", "ai", "ml", "dl", "db"
+    "c", "r", "go", "ai", "ml", "dl", "db", "oop", "oops"
+}
+
+# Generic placeholder terms that indicate testing/dummy input rather than a real topic
+GENERIC_PLACEHOLDERS = {
+    "abc", "cba", "xyz", "zyx", "def", "fed", "test", "testing", "tester", "sample",
+    "dummy", "temp", "temporary", "foo", "bar", "baz", "foobar", "qwerty",
+    "asdf", "hello", "world", "hello world", "blah", "random", "something",
+    "anything", "nothing", "demo", "aaa", "bbb", "ccc", "xxx", "yyy", "zzz"
 }
 
 # Programming and software engineering keywords that genuinely warrant code snippets
@@ -21,7 +29,7 @@ CODING_KEYWORDS = {
     "docker", "kubernetes", "k8s", "bash", "shell", "linux command", "terraform", "ansible",
     "ci/cd", "github actions", "microservices", "asyncio", "threading", "multiprocessing",
     "algorithm", "data structure", "recursion", "dynamic programming", "decorator", "generator",
-    "object oriented", "oop", "functional programming", "unit test", "pytest", "jest",
+    "object oriented", "oop", "oops", "functional programming", "unit test", "pytest", "jest",
     "web development", "mern", "mean stack", "full stack", "fullstack", "backend", "frontend",
     "endpoint", "middleware", "jwt authentication", "oauth", "websockets", "regex"
 }
@@ -65,7 +73,15 @@ def validate_topic(topic: str) -> Tuple[bool, str, bool]:
     
     # 1. Minimum length check
     if len(clean_topic) < 3:
-        return False, "Topic is too short. Please enter a meaningful topic with at least 3 characters.", False
+        return False, "Topic is too short. Please enter a meaningful topic with at least 3 characters (e.g., 'SQL', 'Git', 'OOPs').", False
+
+    # 2. Check for generic placeholder test inputs (e.g. "abc", "xyz", "test", "temp")
+    if clean_topic.lower() in GENERIC_PLACEHOLDERS:
+        return (
+            False,
+            f"'{raw_topic}' is a generic test placeholder. Please provide a specific topic or technology (e.g., 'OOPs Concepts in Java', 'Python AsyncIO', 'Docker Microservices').",
+            False
+        )
 
     # 2. Pure number check (e.g. "12345", "4534896", "837537", "007", "12-34-56")
     alpha_chars = [c for c in clean_topic if c.isalpha()]

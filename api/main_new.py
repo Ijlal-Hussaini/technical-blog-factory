@@ -5,10 +5,11 @@ from pathlib import Path
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 from workflow.blog_workflow_new import BlogPostWorkflow
@@ -24,6 +25,22 @@ app = FastAPI(
     description="Multi-agent system for generating technical blog posts with peer review",
     version="2.0.0"
 )
+
+# Custom validation error handler returning clean text strings (prevents [object Object])
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = []
+    for err in exc.errors():
+        field = err.get("loc", ["topic"])[-1]
+        msg = err.get("msg", "Invalid value")
+        if field == "topic" and "at least" in msg:
+            errors.append("Topic is too short. Please provide a meaningful topic with at least 3 characters (e.g., 'SQL', 'Git', 'OOPs').")
+        else:
+            errors.append(f"{field}: {msg}")
+    return JSONResponse(
+        status_code=400,
+        content={"detail": " ".join(errors)}
+    )
 
 # CORS middleware
 app.add_middleware(
@@ -42,7 +59,7 @@ if os.path.exists(web_dir):
 
 class BlogRequest(BaseModel):
     """Blog generation request model - Pydantic v2"""
-    topic: str = Field(..., min_length=5, description="Blog post topic")
+    topic: str = Field(..., min_length=2, max_length=300, description="Blog post topic")
     audience: str = Field(..., min_length=1, description="Target audience")
     max_iterations: int = Field(default=3, ge=1, le=5, description="Maximum review iterations")
 

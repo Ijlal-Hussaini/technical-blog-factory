@@ -1210,10 +1210,25 @@ window.downloadPDF = async function(index) {
 
 function validateTopicInput(topic) {
     if (!topic || topic.trim().length < 3) {
-        return { valid: false, message: 'Please enter a topic with at least 3 characters.' };
+        return { valid: false, message: "Topic is too short. Please provide a clear subject of at least 3 characters (e.g., 'SQL', 'Git', 'OOPs')." };
     }
 
     const clean = topic.trim();
+
+    // Check for generic test placeholders (e.g. abc, xyz, test, dummy)
+    const genericPlaceholders = [
+        'abc', 'cba', 'xyz', 'zyx', 'def', 'fed', 'test', 'testing', 'sample',
+        'dummy', 'temp', 'temporary', 'foo', 'bar', 'baz', 'foobar', 'qwerty',
+        'asdf', 'hello', 'world', 'hello world', 'blah', 'random', 'something',
+        'anything', 'nothing', 'demo', 'aaa', 'bbb', 'ccc', 'xxx', 'yyy', 'zzz'
+    ];
+    if (genericPlaceholders.includes(clean.toLowerCase())) {
+        return {
+            valid: false,
+            message: `"${clean}" is a generic test placeholder. Please specify a real topic or technology (e.g., "OOPs Concepts in Java", "Python AsyncIO", "Docker Microservices").`
+        };
+    }
+
     const alphaCount = (clean.match(/[a-zA-Z]/g) || []).length;
     
     // Pure numbers or symbols check
@@ -1262,7 +1277,7 @@ function validateTopicInput(topic) {
     const words = clean.split(/\s+/);
     const valid3Prefixes = ['str', 'spl', 'scr', 'spr', 'shr', 'thr', 'sch', 'phr', 'chr', 'psy', 'pse'];
     const valid4Infixes = ['ngth', 'ngst', 'ghts', 'tch', 'nstr', 'rts', 'sch', 'mpl', 'rch'];
-    const techAcronyms = ['sql', 'css', 'html', 'k8s', 'grpc', 'rxjs', 'xml', 'json', 'jwt', 'api', 'git', 'cli', 'db', 'ai', 'ml', 'nlp'];
+    const techAcronyms = ['sql', 'css', 'html', 'k8s', 'grpc', 'rxjs', 'xml', 'json', 'jwt', 'api', 'git', 'cli', 'db', 'ai', 'ml', 'nlp', 'oop', 'oops'];
 
     for (const w of words) {
         const cleanWord = w.toLowerCase().replace(/[^a-z]/g, '');
@@ -1350,7 +1365,19 @@ async function generateBlogPost() {
         
         if (!response.ok) {
             const errData = await response.json().catch(() => ({}));
-            throw new Error(errData.detail || `Server error (${response.status})`);
+            let errMsg = `Server error (${response.status})`;
+            if (errData) {
+                if (typeof errData.detail === 'string') {
+                    errMsg = errData.detail;
+                } else if (Array.isArray(errData.detail) && errData.detail.length > 0) {
+                    errMsg = errData.detail.map(d => (typeof d === 'string' ? d : d.msg || d.message || JSON.stringify(d))).join('; ');
+                } else if (typeof errData.message === 'string') {
+                    errMsg = errData.message;
+                } else if (errData.detail && typeof errData.detail === 'object') {
+                    errMsg = errData.detail.msg || errData.detail.message || JSON.stringify(errData.detail);
+                }
+            }
+            throw new Error(errMsg);
         }
         
         const result = await response.json();
