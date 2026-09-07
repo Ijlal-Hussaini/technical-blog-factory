@@ -51,6 +51,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Cache control middleware to prevent stale browser caching of static UI assets
+@app.middleware("http")
+async def add_no_cache_header(request: Request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path == "/" or path.startswith("/static") or path.endswith((".html", ".css", ".js")):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 # Mount static files for web interface
 web_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "web")
 if os.path.exists(web_dir):
@@ -83,7 +94,14 @@ async def root():
     index_path = os.path.join(web_dir, "index.html")
     
     if os.path.exists(index_path):
-        return FileResponse(index_path)
+        return FileResponse(
+            index_path,
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
     
     return {
         "message": "Technical Blog Post Factory API v2.0",

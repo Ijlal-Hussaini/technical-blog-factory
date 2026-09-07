@@ -557,6 +557,74 @@ function renderAssistantMessage(msg, index) {
             </div>
             <div class="accordion-content">
                 <div class="review-feedback-rendered">
+                    <style>
+                        .review-feedback-rendered {
+                            color: #1e293b !important;
+                            font-size: 0.95rem;
+                            line-height: 1.7;
+                        }
+                        .review-feedback-rendered strong,
+                        .review-feedback-rendered b {
+                            color: #0f172a !important;
+                            font-weight: 700 !important;
+                        }
+                        .review-feedback-rendered h1,
+                        .review-feedback-rendered h2,
+                        .review-feedback-rendered h3,
+                        .review-feedback-rendered h4,
+                        .review-feedback-rendered h5,
+                        .review-feedback-rendered h6 {
+                            color: #0f172a !important;
+                            font-weight: 800 !important;
+                            margin: 1rem 0 0.5rem 0 !important;
+                        }
+                        .review-feedback-rendered p,
+                        .review-feedback-rendered li {
+                            color: #334155 !important;
+                        }
+                        .review-feedback-rendered em,
+                        .review-feedback-rendered i {
+                            color: #1e293b !important;
+                            font-style: italic !important;
+                        }
+                        .review-feedback-rendered code {
+                            background-color: #f1f5f9 !important;
+                            color: #312e81 !important;
+                            border: 1px solid #cbd5e1 !important;
+                            padding: 0.15rem 0.45rem !important;
+                            border-radius: 4px !important;
+                            font-family: monospace !important;
+                            font-weight: 600 !important;
+                        }
+                        [data-theme="dark"] .review-feedback-rendered {
+                            color: #cbd5e1 !important;
+                        }
+                        [data-theme="dark"] .review-feedback-rendered strong,
+                        [data-theme="dark"] .review-feedback-rendered b {
+                            color: #a5b4fc !important;
+                        }
+                        [data-theme="dark"] .review-feedback-rendered h1,
+                        [data-theme="dark"] .review-feedback-rendered h2,
+                        [data-theme="dark"] .review-feedback-rendered h3,
+                        [data-theme="dark"] .review-feedback-rendered h4,
+                        [data-theme="dark"] .review-feedback-rendered h5,
+                        [data-theme="dark"] .review-feedback-rendered h6 {
+                            color: #f8fafc !important;
+                        }
+                        [data-theme="dark"] .review-feedback-rendered p,
+                        [data-theme="dark"] .review-feedback-rendered li {
+                            color: #cbd5e1 !important;
+                        }
+                        [data-theme="dark"] .review-feedback-rendered em,
+                        [data-theme="dark"] .review-feedback-rendered i {
+                            color: #e2e8f0 !important;
+                        }
+                        [data-theme="dark"] .review-feedback-rendered code {
+                            background-color: #1e293b !important;
+                            color: #a5b4fc !important;
+                            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+                        }
+                    </style>
                     ${formatMarkdown(content.review_feedback || 'Review passed with high accuracy')}
                 </div>
             </div>

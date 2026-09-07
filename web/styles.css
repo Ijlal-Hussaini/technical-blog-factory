@@ -965,64 +965,104 @@ body {
 }
 
 .review-feedback-rendered {
-    color: var(--text-primary);
+    color: #1e293b;
     line-height: 1.7;
     font-size: 0.95rem;
 }
 
 .review-feedback-rendered p {
     margin-bottom: 0.85rem;
-    color: var(--text-secondary);
+    color: #334155 !important;
 }
 
 .review-feedback-rendered h1,
 .review-feedback-rendered h2,
 .review-feedback-rendered h3,
-.review-feedback-rendered h4 {
-    color: var(--text-primary);
-    font-weight: 700;
+.review-feedback-rendered h4,
+.review-feedback-rendered h5,
+.review-feedback-rendered h6 {
+    color: #0f172a !important;
+    font-weight: 800 !important;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
 }
 
+[data-theme="dark"] .review-feedback-rendered h1,
+[data-theme="dark"] .review-feedback-rendered h2,
+[data-theme="dark"] .review-feedback-rendered h3,
+[data-theme="dark"] .review-feedback-rendered h4,
+[data-theme="dark"] .review-feedback-rendered h5,
+[data-theme="dark"] .review-feedback-rendered h6 {
+    color: #f8fafc !important;
+}
+
 .review-feedback-rendered strong,
+.review-feedback-rendered b,
 .review-feedback-rendered li strong {
-    color: var(--primary);
-    font-weight: 700;
+    color: #0f172a !important;
+    font-weight: 700 !important;
 }
 
 [data-theme="light"] .review-feedback-rendered strong,
+[data-theme="light"] .review-feedback-rendered b,
 [data-theme="light"] .review-feedback-rendered li strong {
-    color: #4338ca;
+    color: #0f172a !important;
 }
 
 [data-theme="dark"] .review-feedback-rendered strong,
+[data-theme="dark"] .review-feedback-rendered b,
 [data-theme="dark"] .review-feedback-rendered li strong {
-    color: #818cf8;
+    color: #a5b4fc !important;
+}
+
+.review-feedback-rendered em,
+.review-feedback-rendered i {
+    color: #1e293b !important;
+    font-style: italic !important;
+}
+
+[data-theme="dark"] .review-feedback-rendered em,
+[data-theme="dark"] .review-feedback-rendered i {
+    color: #e2e8f0 !important;
 }
 
 .review-feedback-rendered ul,
 .review-feedback-rendered ol {
     margin: 0.75rem 0 1rem 1.5rem;
     padding-left: 0.5rem;
-    color: var(--text-secondary);
+    color: #334155;
 }
 
 .review-feedback-rendered li {
     margin-bottom: 0.45rem;
-    color: var(--text-secondary);
+    color: #334155 !important;
     line-height: 1.65;
 }
 
+[data-theme="dark"] .review-feedback-rendered {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .review-feedback-rendered p,
+[data-theme="dark"] .review-feedback-rendered li {
+    color: #cbd5e1 !important;
+}
+
 .review-feedback-rendered code {
-    background-color: var(--inline-code-bg);
-    color: var(--inline-code-text);
-    padding: 0.18rem 0.45rem;
+    background-color: #f1f5f9 !important;
+    color: #312e81 !important;
+    padding: 0.18rem 0.45rem !important;
     border-radius: var(--radius-sm);
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 0.86em;
-    font-weight: 500;
-    border: 1px solid var(--border-color);
+    font-weight: 600 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+[data-theme="dark"] .review-feedback-rendered code {
+    background-color: #1e293b !important;
+    color: #a5b4fc !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 .accordion-log-item {
