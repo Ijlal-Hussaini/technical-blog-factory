@@ -61,7 +61,7 @@ class BlogRequest(BaseModel):
     """Blog generation request model - Pydantic v2"""
     topic: str = Field(..., min_length=2, max_length=300, description="Blog post topic")
     audience: str = Field(..., min_length=1, description="Target audience")
-    max_iterations: int = Field(default=3, ge=1, le=5, description="Maximum review iterations")
+    max_iterations: int = Field(default=2, ge=1, le=3, description="Maximum review iterations")
 
 
 class BlogResponse(BaseModel):

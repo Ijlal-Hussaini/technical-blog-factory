@@ -47,17 +47,18 @@ class BlogPostWorkflow:
     
     def _should_continue_review(self, state: AgentState) -> str:
         """Determine if review loop should continue or proceed to code generation"""
-        if state.review_approved:
+        if state.review_approved or state.iteration_count >= state.max_iterations:
             return "approved"
         return "continue"
     
-    def run(self, topic: str, audience: str, max_iterations: int = 3) -> dict:
+    def run(self, topic: str, audience: str, max_iterations: int = 2) -> dict:
         """Execute the workflow"""
+        iterations_limit = max(1, min(3, int(max_iterations)))
         
         initial_state = AgentState(
             topic=topic,
             audience=audience,
-            max_iterations=max_iterations
+            max_iterations=iterations_limit
         )
         
         final_state = self.workflow.invoke(initial_state)

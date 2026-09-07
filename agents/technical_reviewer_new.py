@@ -42,10 +42,19 @@ class TechnicalReviewerAgent:
         # Perform web search for verification
         search_context = self.search_for_accuracy(topic)
         
-        prompt = f"""You are a senior technical reviewer. Review this blog post draft for accuracy, clarity, and quality.
+        # Check if this is the final requested iteration
+        is_final_round = (iteration >= max_iterations)
+
+        round_instruction = (
+            f"This is the FINAL review round ({iteration}/{max_iterations}). State 'APPROVAL: YES' and provide a thorough, publication-ready peer review assessment summarizing technical accuracy, verified facts, and strengths."
+            if is_final_round else
+            f"This is review round {iteration} of {max_iterations}. State 'APPROVAL: NO' and provide actionable, specific areas of improvement and technical enhancements for the Content Writer to implement in revision {iteration + 1}."
+        )
+
+        prompt = f"""You are a senior technical reviewer and editor. Review this blog post draft for accuracy, clarity, and quality.
 
 Topic: {topic}
-Current Iteration: {iteration}/{max_iterations}
+Review Round: {iteration}/{max_iterations}
 
 Draft to Review:
 {draft}
@@ -54,27 +63,36 @@ Latest Web Research Context:
 {search_context}
 
 Evaluate the draft based on:
-1. Technical Accuracy - Are facts and concepts correct?
-2. Clarity - Is it easy to understand?
-3. Completeness - Does it cover the topic well?
+1. Technical Accuracy - Are facts, concepts, and terminology correct?
+2. Clarity - Is the explanation accessible and well-reasoned?
+3. Completeness - Does it cover the core principles?
 4. Code Placeholder Usage - Are [CODE_SNIPPET_HERE] markers placed appropriately?
-5. Structure - Is it well-organized?
+5. Structure - Is it well-organized with clear headings?
 
-Provide your review in this format:
-APPROVAL: [YES/NO]
-FEEDBACK: [Detailed feedback with specific improvements needed, or "Approved - excellent quality" if YES]
+FORMATTING RULES:
+- Use clean formatting with standard bullet points ('- Point') and bold labels.
+- Do NOT use raw horizontal rules ('---').
 
-Be constructive but thorough. Approve only if the content is truly high quality."""
+Provide your review in this exact format:
+APPROVAL: {'YES' if is_final_round else 'NO'}
+FEEDBACK:
+[Your detailed, structured peer review evaluation]
+
+{round_instruction}"""
 
         review_text = self.llm.invoke(prompt)
         
-        # Parse approval status
-        approved = "APPROVAL: YES" in review_text.upper() or iteration >= max_iterations
+        # Normalize any raw markdown bullet asterisks into clean hyphens in feedback
+        import re
+        clean_feedback = re.sub(r'^[ \t]*[\*][ \t]+', '- ', review_text, flags=re.MULTILINE)
         
-        message = f"Technical Reviewer: Review {'approved' if approved else 'requires revision'} (iteration {iteration})"
+        # Determine approval strictly by iteration count
+        approved = is_final_round or ("APPROVAL: YES" in clean_feedback.upper() and iteration >= max_iterations)
+        
+        message = f"Technical Reviewer: Round {iteration}/{max_iterations} {'approved' if approved else 'critiqued (sent for revision)'}"
         
         return {
-            "review_feedback": review_text,
+            "review_feedback": clean_feedback,
             "review_approved": approved,
             "messages": [message]
         }

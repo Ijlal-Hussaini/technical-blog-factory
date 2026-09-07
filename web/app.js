@@ -556,7 +556,9 @@ function renderAssistantMessage(msg, index) {
                 <span class="accordion-arrow">▼</span>
             </div>
             <div class="accordion-content">
-                <pre>${escapeHtml(content.review_feedback || 'Review passed with high accuracy')}</pre>
+                <div class="review-feedback-rendered">
+                    ${formatMarkdown(content.review_feedback || 'Review passed with high accuracy')}
+                </div>
             </div>
         </div>
         
@@ -1317,7 +1319,7 @@ async function generateBlogPost() {
     const topic = elements.topicInput.value.trim();
     const customAud = elements.customAudienceInput.value.trim();
     const audience = customAud || selectedAudience;
-    const maxIterations = parseInt(elements.maxIterations.value) || 3;
+    const maxIterations = Math.max(1, Math.min(3, parseInt(elements.maxIterations.value) || 2));
     
     // Instant client-side validation
     const validation = validateTopicInput(topic);

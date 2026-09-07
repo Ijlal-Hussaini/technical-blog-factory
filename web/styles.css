@@ -964,6 +964,42 @@ body {
     word-break: break-word;
 }
 
+.review-feedback-rendered {
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.review-feedback-rendered p {
+    margin-bottom: 0.85rem;
+}
+
+.review-feedback-rendered strong {
+    color: var(--primary-light);
+    font-weight: 600;
+}
+
+.review-feedback-rendered ul,
+.review-feedback-rendered ol {
+    margin: 0.75rem 0 1rem 1.5rem;
+    padding-left: 0.5rem;
+}
+
+.review-feedback-rendered li {
+    margin-bottom: 0.45rem;
+    color: var(--text-secondary);
+}
+
+.review-feedback-rendered code {
+    background: var(--code-bg);
+    color: var(--primary-light);
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-xs);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    border: 1px solid var(--border-color);
+}
+
 .accordion-log-item {
     padding: 0.4rem 0;
     display: flex;
