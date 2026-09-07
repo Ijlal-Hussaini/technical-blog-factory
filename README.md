@@ -6,17 +6,20 @@
 
 <br/>
 
-![Python](https://img.shields.io/badge/Python-3.14-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)
-![LangGraph](https://img.shields.io/badge/LangGraph-1.0+-purple.svg)
-![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python](https://img.shields.io/badge/Python-3.11%20|%203.12%20|%203.14-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-0.3+-purple.svg)
+![Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-EA4335.svg?logo=google&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-Fallback%20Engine-F55036.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-**AI-Powered Multi-Agent System for Generating High-Quality Technical Blog Posts**
+<p align="center">
+  <strong>An autonomous multi-agent AI studio that researches, writes, peer-reviews, and formats publication-grade technical blog posts with live web verification, syntax-checked code snippets, and vector PDF exports.</strong>
+</p>
 
-🌐 **Live Website:** [https://technical-blog-factory.onrender.com](https://technical-blog-factory.onrender.com)
+🌐 **Live Application:** [https://technical-blog-factory.onrender.com](https://technical-blog-factory.onrender.com)
 
-[Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [Architecture](#-architecture) • [API](#-api-documentation) • [Contributing](#-contributing)
+[Live Demo](https://technical-blog-factory.onrender.com) • [Key Features](#-key-features) • [Multi-Agent Architecture](#-multi-agent-architecture) • [Quick Start](#-quick-start) • [API Reference](#-api-reference) • [Project Structure](#-project-structure)
 
 </div>
 
@@ -24,262 +27,184 @@
 
 ## 🌟 Overview
 
-Technical Blog Post Factory is an intelligent content generation system that leverages multiple AI agents working collaboratively to create professional, accurate, and engaging technical blog posts. Built with cutting-edge technologies including LangGraph, Google Gemini 2.5 Flash, and FastAPI.
+**Technical Blog Post Factory** is an enterprise-ready AI writing pipeline built on **LangGraph 0.3+** and **FastAPI**. Unlike standard single-prompt LLM wrappers, it orchestrates a collaborative network of specialized agents that draft, research, critique, revise, and inject verified code snippets into publication-ready articles.
 
-### Why This Project?
-
-- ⚡ **Save Time**: Generate comprehensive blog posts in minutes, not hours
-- 🎯 **Ensure Quality**: Automated peer review loop catches errors and improves content
-- 🔍 **Verify Accuracy**: Real-time web search validates technical information
-- 💻 **Add Examples**: Automatic code snippet generation with best practices
-- 🎨 **Professional Output**: Clean, well-structured markdown ready to publish
+Every article undergoes iterative peer review cross-checked against live web documentation via the **Tavily API**, guaranteeing up-to-date technical accuracy before final export.
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-### 🤖 Multi-Agent Collaboration
+### 🤖 Autonomous Multi-Agent System
+- **Content Writer Agent**: Generates structured, engaging drafts tailored to the chosen audience (*Beginners*, *Intermediate*, *Advanced*, *DevOps*, or *Architects*).
+- **Technical Reviewer Agent**: Performs live web searches to fact-check claims against current official documentation, evaluating accuracy, clarity, and depth.
+- **Strict Review Cycles**: Choose **1, 2, or 3 review iterations**. Every cycle triggers real critique and dedicated revision passes before final approval.
+- **Code Snippet Agent**: Automatically detects programming topics (*e.g., Python, Docker, OOPs, SQL, React*) and generates syntax-verified, runnable code snippets. Intelligently skips code injection for conceptual or non-coding subjects (*e.g., History, Management*).
 
-Three specialized AI agents work together seamlessly:
+### 🛡️ Upfront Topic Guardrails
+- Built-in validation engine prevents spam and hallucinations.
+- Blocks pure numbers (`12345`, `837537`), keyboard walks (`asdfghjkl`, `sdhgiughsi`), and generic test placeholders (`abc`, `test`, `sample`).
+- Accurately whitelists technical acronyms and short terms (`OOPs`, `SQL`, `Git`, `API`, `CSS`, `K8s`, `AI`).
 
-| Agent | Role | Capabilities |
-|-------|------|-------------|
-| 📄 **Content Writer** | Draft Creation | Generates comprehensive blog posts tailored to your audience |
-| 🔍 **Technical Reviewer** | Quality Assurance | Verifies accuracy using web search, provides detailed feedback |
-| 💻 **Code Generator** | Example Creation | Adds relevant, well-commented code snippets |
+### ⚡ Multi-Model Fallback Resilience
+- Zero downtime or 429 quota failures: seamlessly cascades across **Gemini 2.5 Flash**, **Gemini 3.5 Flash-Lite**, and **Groq (`compound-mini`)** fallback providers.
 
-### 🔄 Intelligent Workflow
+### 📄 Publication-Grade Multi-Format Export
+- 📕 **True Vector Text PDF**: Generated via standalone `jsPDF` with automatic page-break protection, running headers/footers, and syntax-highlighted code boxes (100% selectable and searchable; no raster screenshots or cut-off text).
+- 📋 **Word / Google Docs Copy**: Formats clean text with bullet points, numbered lists, and code blocks—completely free of raw markdown asterisks (`**`) or hashes (`#`).
+- 📄 **Clean Plain Text (.txt)**: Instant direct download of clean formatted text.
+
+### 🎨 Modern Glassmorphic Web UI
+- Responsive design tailored for screens from **360px mobile** up to **2K ultra-wide monitors**.
+- Smooth **Dark / Light mode** toggle with persistent storage.
+- In-app **Delete Modal** with instant **Undo** toast recovery.
+- Live backend connection health monitor.
+
+---
+
+## 🏗️ Multi-Agent Architecture
 
 ```mermaid
-graph LR
-    A[User Input] --> B[Content Writer]
-    B --> C[Technical Reviewer]
-    C -->|Needs Revision| B
-    C -->|Approved| D[Code Generator]
-    D --> E[Final Blog Post]
+flowchart TD
+    A([User Prompt / Topic]) --> B[Topic Validator Guardrails]
+    B -->|Valid Topic| C[Content Writer Agent]
+    B -->|Invalid Input| ERR[Clear User Guidance Toast]
+    
+    C -->|Draft Content| D[Technical Reviewer Agent]
+    D -->|Live Query| E[(Tavily Web Search API)]
+    E -->|Latest Docs & Citations| D
+    
+    D -->|Review Rounds < Max| C
+    D -->|Approved / Max Rounds Reached| F{Is Coding Topic?}
+    
+    F -->|Yes| G[Code Snippet Generator Agent]
+    F -->|No| H[Direct Finalization]
+    
+    G --> I([Publication-Ready Technical Blog Post])
+    H --> I
+    
+    I --> J1[📕 Vector PDF Download]
+    I --> J2[📋 Formatted Word Copy]
+    I --> J3[📄 Clean Text Download]
 ```
-
-- **Iterative Review**: 1 to 3 peer review cycles ensure precision and quality
-- **Web Search Integration**: Real-time fact-checking via Tavily API
-- **Smart Code Placement**: Automatically determines where code examples add value
-
-### 🎨 Modern Web Interface
-
-- **Responsive Design**: Adaptive layout across mobile, tablet, laptop, and 2K screens
-- **Dark & Light Mode**: Seamless theme switching with persistent user preferences
-- **Publication-Grade Export**: One-click Vector PDF download (via jsPDF), formatted Word/Google Docs clipboard copy, and Clean Text (.txt)
-- **Input Guardrails**: Real-time validation preventing random numbers or gibberish from generating blogs
-- **Chat History**: Save, restore, and delete articles with instant Undo protection
-- **Local Storage**: All chats and preferences persisted locally in your browser
 
 ---
 
-## 🎬 Demo
-
-### Welcome Screen
-![Welcome Screen](./assets/Home.png)
-
-### Generation Process
-![Generation Process](./assets/Generating%20New%20Blog%20Post.png)
-
-### Generated Blog Post
-![Generated Result](./assets/Blog%20Post%20Generated.png)
-
-### Code Snippets Added
-![Code Snippets](./assets/Added%20Code%20Snippet.png)
-
-### Example Output
-
-**Input:**
-```
-Topic: Introduction to Docker Containers
-Audience: Beginners
-```
-
-**Output:**
-A comprehensive blog post including:
-- Clear introduction and conclusion
-- Step-by-step explanations
-- Practical code examples
-- Best practices and tips
-- Verified technical accuracy
-
----
-
-## 🚀 Installation
+## 🚀 Quick Start
 
 ### Prerequisites
+- **Python 3.10+** (Tested on Python 3.11, 3.12, and 3.14)
+- **Google Gemini API Key** ([Get Free Key from Google AI Studio](https://aistudio.google.com/app/apikey))
+- **Tavily API Key** ([Get Free Key from Tavily](https://tavily.com))
+- *(Optional)* **Groq API Key** ([Get Free Key from Groq](https://console.groq.com)) for secondary LLM fallback
 
-- **Python 3.14+** ([Download](https://www.python.org/downloads/))
-- **Google Gemini API Key** ([Get Free Key](https://aistudio.google.com/app/apikey))
-- **Tavily API Key** ([Get Free Key](https://tavily.com))
-
-### Quick Start
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/technical-blog-factory.git
-   cd technical-blog-factory
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Configure environment**
-   ```bash
-   # Copy example env file
-   cp .env.example .env
-   
-   # Edit .env and add your API keys
-   GOOGLE_API_KEY=your_actual_gemini_key
-   TAVILY_API_KEY=your_actual_tavily_key
-   ```
-
-4. **Run the application**
-   
-   **Windows:**
-   ```bash
-   start.bat
-   ```
-   
-   **Mac/Linux:**
-   ```bash
-   python api/main_new.py
-   ```
-
-5. **Open your browser**
-   ```
-   http://localhost:8000
-   ```
-
----
-
-## 📖 Usage
-
-### Web Interface
-
-1. Click **"Get Started"** or **"New Chat"**
-2. Enter your blog post topic
-3. Select target audience (or enter custom)
-4. Adjust review iterations (1-5)
-5. Click **"Generate Blog Post"**
-6. Watch the agents collaborate in real-time
-7. Download or copy your finished blog post
-
-### API Usage
-
-```python
-import requests
-
-response = requests.post('http://localhost:8000/api/generate-blog', json={
-    "topic": "Introduction to Kubernetes",
-    "audience": "DevOps Engineers",
-    "max_iterations": 3
-})
-
-result = response.json()
-print(result['final_blog_post'])
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Ijlal-Hussaini/technical-blog-factory.git
+cd technical-blog-factory
 ```
 
-### Python Integration
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-```python
-from workflow.blog_workflow_new import BlogPostWorkflow
+### 3. Configure Environment Variables
+Copy the example environment file:
+```bash
+cp .env.example .env
+```
+Open `.env` and insert your API keys:
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
+TAVILY_API_KEY=your_tavily_api_key_here
+GROQ_API_KEY=your_optional_groq_key_here
+API_HOST=0.0.0.0
+API_PORT=8000
+```
 
-workflow = BlogPostWorkflow()
-result = workflow.run(
-    topic="Python Async Programming",
-    audience="Intermediate Developers",
-    max_iterations=3
-)
+### 4. Launch the Application
 
-print(result['final_blog_post'])
+**On Windows (One-Click Launcher):**
+```cmd
+start.bat
+```
+
+**On Linux / macOS:**
+```bash
+python api/main_new.py
+```
+
+Open your browser at:
+```
+http://localhost:8000
 ```
 
 ---
 
-## 🏗️ Architecture
+## ☁️ Live Cloud Deployment (Render)
 
-### Project Structure
+This repository is pre-configured for automated deployment on **Render**:
+
+1. Create a new **Web Service** on [Render](https://render.com) and connect this repository.
+2. Set configuration:
+   - **Environment**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn api.main_new:app --host 0.0.0.0 --port $PORT`
+   - **Plan**: Free ($0/month)
+3. Add your Environment Variables in the Render dashboard:
+   - `GOOGLE_API_KEY`
+   - `TAVILY_API_KEY`
+   - `GROQ_API_KEY` (optional)
+4. Click **Deploy**! Render will automatically build and serve your app with free HTTPS.
+
+---
+
+## 📁 Project Structure
 
 ```
 technical-blog-factory/
-├── agents/                       # AI Agent Implementations & Guardrails
-│   ├── topic_validator.py       # Input validation (blocks numbers/gibberish)
-│   ├── content_writer_new.py    # Draft generation agent
-│   ├── technical_reviewer_new.py# Review and web-search verification agent
-│   ├── code_snippet_new.py      # Code example generator
-│   ├── llm_client.py            # Robust multi-model fallback client
-│   └── state_new.py             # Shared state management
-├── api/                          # FastAPI Backend
-│   └── main_new.py              # REST API endpoints & static file serving
-├── workflow/                     # LangGraph Workflow
-│   └── blog_workflow_new.py     # Multi-agent state graph orchestration
-├── web/                          # Modern Frontend
-│   ├── index.html               # Main UI & Modals
-│   ├── app.js                   # Application logic & vector PDF generator
-│   ├── styles.css               # Design system & adaptive styling
+├── agents/                       # Multi-Agent Implementations & Logic
+│   ├── topic_validator.py       # Input guardrails against numbers, mash & spam
+│   ├── content_writer_new.py    # Autonomous technical author agent
+│   ├── technical_reviewer_new.py# Live web search fact-checker & reviewer
+│   ├── code_snippet_new.py      # Syntax-tested code snippet generator
+│   ├── llm_client.py            # Robust multi-model fallback engine
+│   ├── state_new.py             # LangGraph Pydantic shared state
+│   └── __init__.py
+├── api/                          # FastAPI Backend Engine
+│   ├── main_new.py              # REST endpoints, static file mounting & error handlers
+│   └── __init__.py
+├── workflow/                     # LangGraph State Graph
+│   ├── blog_workflow_new.py     # Graph wiring, conditional edges & cycle control
+│   └── __init__.py
+├── web/                          # Modern Frontend Interface
+│   ├── index.html               # Semantic HTML5 layout, modals & templates
+│   ├── app.js                   # Application state, vector PDF engine & client validation
+│   ├── styles.css               # Glassmorphic dark/light design system & responsive rules
+│   ├── favicon.svg              # Custom vector SVG brand icon
 │   └── vendor/
-│       └── jspdf.umd.min.js     # Standalone Vector PDF engine
-├── assets/                       # Documentation screenshots
-├── .env.example                  # Environment configuration template
-├── requirements.txt              # Python dependencies
-├── start.bat                     # Windows one-click launcher
-└── README.md                     # Comprehensive documentation
+│       └── jspdf.umd.min.js     # Standalone Vector PDF library
+├── assets/                       # Media & static repository assets
+│   └── .gitkeep
+├── .env.example                  # Environment variable configuration template
+├── .gitignore                    # Git rules (ensures .env is never committed)
+├── requirements.txt              # Production Python package dependencies
+├── start.bat                     # Windows automated launcher script
+├── LICENSE                       # MIT Open Source License
+├── CONTRIBUTING.md               # Contribution guidelines
+└── README.md                     # Project documentation
 ```
-
-### Technology Stack
-
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **AI Framework** | LangGraph 1.0+ | Multi-agent workflow orchestration |
-| **LLM** | Google Gemini 2.5 Flash | Natural language generation |
-| **Search** | Tavily API | Real-time web search for fact-checking |
-| **Backend** | FastAPI 0.115+ | High-performance REST API |
-| **Frontend** | Vanilla JS | Lightweight, responsive UI |
-| **State** | Pydantic v2 | Type-safe data validation |
-
-### Agent Details
-
-#### Content Writer Agent
-- **Model**: Gemini 2.5 Flash
-- **Temperature**: 0.7 (creative)
-- **Responsibilities**:
-  - Generate initial drafts
-  - Revise based on feedback
-  - Maintain consistent tone
-  - Structure content logically
-
-#### Technical Reviewer Agent
-- **Model**: Gemini 2.5 Flash
-- **Temperature**: 0.3 (precise)
-- **Responsibilities**:
-  - Verify technical accuracy
-  - Perform web searches
-  - Provide constructive feedback
-  - Approve final content
-
-#### Code Snippet Agent
-- **Model**: Gemini 2.5 Flash
-- **Temperature**: 0.4 (balanced)
-- **Responsibilities**:
-  - Generate relevant code examples
-  - Add helpful comments
-  - Follow best practices
-  - Ensure syntax correctness
 
 ---
 
-## 📡 API Documentation
+## 📡 API Reference
 
 ### Health Check
 ```http
 GET /health
 ```
-
-**Response:**
+**Response (200 OK):**
 ```json
 {
   "status": "healthy",
@@ -298,25 +223,25 @@ Content-Type: application/json
 **Request Body:**
 ```json
 {
-  "topic": "Introduction to Docker",
+  "topic": "OOPs Concepts in Java",
   "audience": "Beginners",
-  "max_iterations": 3
+  "max_iterations": 2
 }
 ```
 
-**Response:**
+**Response (200 OK):**
 ```json
 {
-  "topic": "Introduction to Docker",
+  "topic": "OOPs Concepts in Java",
   "audience": "Beginners",
-  "final_blog_post": "# Introduction to Docker\n\n...",
+  "final_blog_post": "# Mastering OOPs Concepts in Java\n\nObject-Oriented Programming (OOP) is a foundational paradigm...",
   "iterations": 2,
-  "review_feedback": "Approved - excellent quality",
+  "review_feedback": "Approved - Technical accuracy verified against official documentation.",
   "messages": [
     "Content Writer: Draft created (iteration 1)",
-    "Technical Reviewer: Review requires revision (iteration 1)",
+    "Technical Reviewer: Round 1/2 critiqued (sent for revision)",
     "Content Writer: Draft revised (iteration 2)",
-    "Technical Reviewer: Review approved (iteration 2)",
+    "Technical Reviewer: Round 2/2 approved",
     "Code Snippet Agent: Generated 3 code snippet(s)"
   ],
   "code_snippets_count": 3,
@@ -326,191 +251,38 @@ Content-Type: application/json
 
 ---
 
-## 🔧 Configuration
-
-### Environment Variables
+## ⚙️ Environment Variables
 
 | Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `GOOGLE_API_KEY` | Google Gemini API key | ✅ Yes | - |
-| `TAVILY_API_KEY` | Tavily search API key | ✅ Yes | - |
-| `API_HOST` | Server host address | ❌ No | `0.0.0.0` |
-| `API_PORT` | Server port number | ❌ No | `8000` |
-
-### Model Configuration
-
-Edit agent files to customize AI behavior:
-
-```python
-# agents/content_writer_new.py
-self.llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",  # Change model
-    temperature=0.7,            # Adjust creativity (0.0-1.0)
-)
-```
-
-### Review Iterations
-
-Adjust in the web interface or API request:
-- **1-2 iterations**: Fast, good for simple topics
-- **3 iterations**: Balanced (recommended)
-- **4-5 iterations**: Thorough, best for complex topics
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### API Key Errors
-```
-Error: API Key not found
-```
-**Solution**: 
-- Verify `.env` file exists with correct keys
-- Check keys are valid at [Google AI Studio](https://aistudio.google.com/)
-- Ensure no extra spaces in `.env` file
-
-#### Model Not Found
-```
-Error: models/gemini-2.5-flash is not found
-```
-**Solution**:
-- Check your API tier supports Gemini 2.5 Flash
-- Try fallback model: `gemini-pro`
-- Verify quota at [Google AI Studio](https://aistudio.google.com/)
-
-#### Port Already in Use
-```
-Error: Address already in use
-```
-**Solution**:
-```bash
-# Change port in .env
-API_PORT=8001
-```
-
-#### Quota Exceeded
-```
-Error: 429 RESOURCE_EXHAUSTED
-```
-**Solution**:
-- Wait for quota reset (usually 1 minute)
-- Upgrade to paid tier for higher limits
-- Use `gemini-pro` model (lower quota usage)
+| :--- | :--- | :---: | :--- |
+| `GOOGLE_API_KEY` | Primary LLM engine (Google AI Studio Gemini) | **Yes** | — |
+| `TAVILY_API_KEY` | Real-time web search and fact-checking engine | **Yes** | — |
+| `GROQ_API_KEY` | Secondary fallback LLM engine (Groq) | Optional | — |
+| `API_HOST` | FastAPI server host binding | No | `0.0.0.0` |
+| `API_PORT` | FastAPI server local port binding | No | `8000` |
+| `PORT` | Cloud dynamic port (auto-set by Render) | No | `10000` |
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
-
-### Ways to Contribute
-
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 📝 Improve documentation
-- 🔧 Submit pull requests
-
-### Development Setup
-
-1. Fork the repository
-2. Create a feature branch
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. Make your changes
-4. Test thoroughly
-5. Commit with clear messages
-   ```bash
-   git commit -m "Add amazing feature"
-   ```
-6. Push to your fork
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-7. Open a Pull Request
-
-### Code Style
-
-- Follow PEP 8 for Python code
-- Use meaningful variable names
-- Add docstrings to functions
-- Keep functions focused and small
+Contributions, feature suggestions, and bug reports are welcome!
+1. Fork the Project.
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your Changes (`git commit -m "Add AmazingFeature"`).
+4. Push to the Branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see below for details:
-
-```
-MIT License
-
-Copyright (c) 2024 Technical Blog Post Factory
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
----
-
-## 🙏 Acknowledgments
-
-- **Google Gemini** - Powerful AI language model
-- **LangGraph** - Excellent multi-agent framework
-- **Tavily** - Reliable web search API
-- **FastAPI** - Modern, fast web framework
-- **LangChain** - Comprehensive AI toolkit
-
----
-
-## 📧 Support & Contact
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/technical-blog-factory/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/technical-blog-factory/discussions)
-- **Email**: your.email@example.com
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Add support for multiple languages
-- [ ] Implement image generation for blog posts
-- [ ] Add SEO optimization suggestions
-- [ ] Create browser extension
-- [ ] Add export to Medium/Dev.to
-- [ ] Implement user authentication
-- [ ] Add collaborative editing
-- [ ] Create mobile app
-
----
-
-## ⭐ Star History
-
-If you find this project useful, please consider giving it a star! ⭐
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
 
 ---
 
 <div align="center">
 
-**Made with ❤️ using AI and Modern Web Technologies**
-
-[⬆ Back to Top](#-technical-blog-post-factory)
+**Built with ❤️ by [Ijlal Hussain](https://github.com/Ijlal-Hussaini)**
 
 </div>
