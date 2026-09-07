@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="50%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#C026D3" />
+    </linearGradient>
+    <linearGradient id="foldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2E8F0" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25" />
+    </filter>
+  </defs>
+  
+  <!-- Outer Rounded Container with Deep Gradient -->
+  <rect width="64" height="64" rx="16" fill="url(#bgGrad)" />
+  
+  <!-- Document Sheet with Folded Corner -->
+  <g filter="url(#shadow)">
+    <path d="M18 13 C16.34 13 15 14.34 15 16 L15 48 C15 49.66 16.34 51 18 51 L46 51 C47.66 51 49 49.66 49 48 L49 23 L39 13 Z" fill="#FFFFFF" />
+    <path d="M39 13 L39 21 C39 22.1 39.9 23 41 23 L49 23 Z" fill="url(#foldGrad)" />
+  </g>
+  
+  <!-- Code Brackets < / > on Document -->
+  <path d="M25 28 L20 33 L25 38" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M39 28 L44 33 L39 38" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M34 26 L30 40" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" fill="none" />
+  
+  <!-- Tech lines below code brackets -->
+  <rect x="22" y="44" width="20" height="2.5" rx="1.25" fill="#94A3B8" />
+  
+  <!-- AI Sparkle at Top Right -->
+  <path d="M52 8 Q52 14 58 14 Q52 14 52 20 Q52 14 46 14 Q52 14 52 8 Z" fill="#FBBF24" />
+</svg>

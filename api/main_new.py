@@ -83,6 +83,16 @@ async def root():
     }
 
 
+@app.get("/favicon.ico")
+@app.get("/favicon.svg")
+async def favicon():
+    """Serve favicon for browser tabs"""
+    favicon_path = os.path.join(web_dir, "favicon.svg")
+    if os.path.exists(favicon_path):
+        return FileResponse(favicon_path, media_type="image/svg+xml")
+    raise HTTPException(status_code=404, detail="Favicon not found")
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
