@@ -2,6 +2,10 @@
 
 <div align="center">
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-technical--blog--factory.onrender.com-6366F1?style=for-the-badge&logo=render&logoColor=white)](https://technical-blog-factory.onrender.com)
+
+<br/>
+
 ![Python](https://img.shields.io/badge/Python-3.14-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)
 ![LangGraph](https://img.shields.io/badge/LangGraph-1.0+-purple.svg)
@@ -9,6 +13,8 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 **AI-Powered Multi-Agent System for Generating High-Quality Technical Blog Posts**
+
+🌐 **Live Website:** [https://technical-blog-factory.onrender.com](https://technical-blog-factory.onrender.com)
 
 [Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [Architecture](#-architecture) • [API](#-api-documentation) • [Contributing](#-contributing)
 
@@ -53,7 +59,7 @@ graph LR
     D --> E[Final Blog Post]
 ```
 
-- **Iterative Review**: Up to 5 review cycles ensure quality
+- **Iterative Review**: 1 to 3 peer review cycles ensure precision and quality
 - **Web Search Integration**: Real-time fact-checking via Tavily API
 - **Smart Code Placement**: Automatically determines where code examples add value
 
